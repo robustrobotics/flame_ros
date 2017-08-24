@@ -1,0 +1,8 @@
+<library path="lib/libflame_ros_nodelets">
+  <class name="flame_ros/FlameNodelet"
+         type="flame_ros::FlameNodelet" base_class_type="nodelet::Nodelet">
+    <description>
+      Nodelet for Fast Lightweight Mesh Estimation (FLAME).
+    </description>
+  </class>
+</library>

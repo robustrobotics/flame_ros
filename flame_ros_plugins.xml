@@ -1,0 +1,12 @@
+<library path="lib/libflame_rviz_plugins">
+  <class name="flame_rviz_plugins/TexturedMesh"
+         type="flame_rviz_plugins::TexturedMeshDisplay"
+         base_class_type="rviz::Display">
+    <description>
+      Displays a textured triangle mesh. PointCloud2 field of
+      pcl_msgs/PolygonMesh must have texture coordinates.
+    </description>
+    <message_type>pcl_msgs/PolygonMesh</message_type>
+    <message_type>sensor_msgs/Image</message_type>
+  </class>
+</library>

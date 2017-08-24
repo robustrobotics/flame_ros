@@ -1,0 +1,56 @@
+<!-- Launch file for running the nodelet for Flame. -->
+<launch>
+  <arg name="image" default="image_rect_color" />
+  <arg name="keyframes" default="keyframes" />
+
+  <arg name="namespace" default="flame" />
+  <arg name="manager" default="manager" />
+  <arg name="standalone" default="true" />
+  <arg name="output_dest" default="log" />
+
+  <arg name="load_params" default="true" />
+  <arg name="param_file" default="flame_nodelet.yaml" />
+
+  <arg name="bag_data" default="false" />
+
+  <group ns="$(arg namespace)" >
+
+    <!-- frames -->
+    <include file="$(find flame_ros)/launch/frames.launch" />
+
+    <!-- Launch the nodelet manager. -->
+    <node if="$(arg standalone)"
+          pkg="nodelet" type="nodelet" name="$(arg manager)"
+          args="manager" output="$(arg output_dest)" >
+    </node>
+
+    <!-- Launch the nodelet.. -->
+    <node pkg="nodelet" type="nodelet" name="flame_nodelet"
+          args="load flame_ros/FlameNodelet $(arg manager)"
+          output="$(arg output_dest)">
+      <rosparam command="load" if="$(arg load_params)"
+                file="$(find flame_ros)/cfg/$(arg param_file)"/>
+      <remap from="image" to="$(arg image)" />
+      <remap from="keyframes" to="$(arg keyframes)" />
+    </node>
+
+  </group>
+
+  <!-- Bag the outputs. -->
+  <node if="$(arg bag_data)"
+        pkg="rosbag" type="record" name="flame_bagger"
+        output="$(arg output_dest)"
+        args="/$(arg namespace)/mesh
+              /$(arg namespace)/stats
+              /$(arg namespace)/nodelet_stats
+              /$(arg namespace)/idepth_registered/camera_info
+              /$(arg namespace)/idepth_registered/image_rect
+              /$(arg namespace)/depth_registered/camera_info
+              /$(arg namespace)/depth_registered/image_rect
+              /$(arg namespace)/depth_registered_raw/camera_info
+              /$(arg namespace)/depth_registered_raw/image_rect
+              /tf
+              /tf_static
+              -o flame">
+  </node>
+</launch>

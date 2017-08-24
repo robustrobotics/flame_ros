@@ -1,0 +1,12 @@
+<!-- Launch file for flame_ros frames. -->
+
+<launch>
+  <arg name="world_frame_id" default="world" />
+  <arg name="camera_world_frame_id" default="camera_world" />
+
+  <!-- camera RDF to FLU transform -->
+  <node pkg="tf2_ros" type="static_transform_publisher" name="camera_world_to_world"
+        args="0.0 0.0 0.0 0.5 -0.5 0.5 -0.5 $(arg world_frame_id) $(arg camera_world_frame_id)" >
+  </node>
+
+</launch>

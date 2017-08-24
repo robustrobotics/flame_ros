@@ -1,0 +1,43 @@
+<!-- Launch file for running Flame from a dataset of images. -->
+<launch>
+  <arg name="load_params" default="true" />
+  <arg name="param_file" default="flame_offline_asl.yaml" />
+
+  <arg name="bag_data" default="false" />
+
+  <!-- frames -->
+  <include file="$(find flame_ros)/launch/frames.launch" />
+
+  <!-- Launch the node. -->
+  <node pkg="flame_ros" type="flame_offline_asl"
+        name="flame_ros"
+        output="screen">
+    <rosparam command="load" if="$(arg load_params)"
+              file="$(find flame_ros)/cfg/$(arg param_file)"/>
+  </node>
+
+  <!-- Bag the outputs. -->
+  <node if="$(arg bag_data)"
+        pkg="rosbag" type="record" name="flame_bagger"
+        output="screen"
+        args="/flame/mesh
+              /flame/stats
+              /flame/nodelet_stats
+              /flame/idepth_registered/camera_info
+              /flame/idepth_registered/image_rect
+              /flame/depth_registered/camera_info
+              /flame/depth_registered/image_rect
+              /flame/depth_registered_raw/camera_info
+              /flame/depth_registered_raw/image_rect
+              /flame/debug/wireframe
+              /flame/debug/features
+              /flame/debug/detections
+              /flame/debug/matches
+              /flame/debug/photo_error
+              /flame/debug/normals
+              /flame/debug/idepthmap
+              /tf
+              /tf_static
+              -o flame">
+  </node>
+</launch>

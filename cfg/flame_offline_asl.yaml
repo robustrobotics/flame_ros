@@ -1,0 +1,103 @@
+# flame_offline parameters.
+pose_path: /home/wng/Projects/rrg/data/euroc_mav_datasets/V1_01_easy/mav0/state_groundtruth_estimate0
+rgb_path: /home/wng/Projects/rrg/data/euroc_mav_datasets/V1_01_easy/mav0/cam0
+depth_path: /home/wng/Projects/rrg/data/euroc_mav_datasets/V1_01_easy/mav0/depthmap0
+world_frame: RFU
+
+input:
+  camera_frame_id: camera
+  camera_world_frame_id: camera_world
+  subsample_factor: 1 # Process one out of this many images.
+  poseframe_subsample_factor: 6 # Create pf every this number of images.
+  resize_factor: 1 # Downsample image width/height by this factor.
+
+  # Target rate at which to process images. This allows ROS to clear the
+  # callback queues so that things get bagged.
+  rate: 30
+
+output:
+  quiet: false # Turn off terminal output.
+  mesh: true # Publish mesh as pcl_msgs/PolygonMesh.
+  idepthmap: false # Publish idepthmap as sensor_msgs/Image.
+  depthmap: false # Publish depthmap as sensor_msgs/Image.
+  cloud: false # Publish pointcloud sensor_msgs/PointCloud2. Prefer mesh or depthmap (in that order).
+  features: false # Publish raw features points as sensors_msgs/Image.
+  stats: true # Publish statistics message.
+
+  # Integrate load measurements over this many frames before reporting. Timing
+  # resolution of /proc is only a Jiffy (usually 0.01 sec), so querying faster
+  # than this is not meaningful.
+  load_integration_factor: 15
+
+  # Used to scale idepths before they are colormapped. For example, if average
+  # scene depth is >> 1m, then coloring by idepth will not provide much dynamic
+  # range. Coloring by scene_color_scale * idepth (if scene_color_scale > 1) is
+  # much more informative.
+  scene_color_scale: 1.0
+
+  # Filter out oblique triangles for display. This does not change the
+  # underlying graph - it only affects the output/display.
+  filter_oblique_triangles: True
+  oblique_normal_thresh: 1.57 # 1.39626 # 80 degress in radians.
+  oblique_idepth_diff_factor: 0.35 # Relative difference between max/min triangle idepth.
+  oblique_idepth_diff_abs: 0.1 # Absolute difference between max/min triangle idepth.
+
+  # Filter out triangles with long edges for display. This does not change the
+  # underlying graph - it only affects the output/display.
+  filter_long_edges: True
+  edge_length_thresh: 0.333 # As a fraction of image width.
+
+  # Filter out triangles that are far from the camera for display. This does not
+  # change the underlying graph - it only affects the output/display.
+  filter_triangles_by_idepth: True
+  min_triangle_idepth: 0.01
+
+  # Don't publish output if angular rate exceeds this threshold. Will be ignored if 0.
+  max_angular_rate: 0.0 # deg/sec
+
+debug:
+  wireframe: true # Mesh wireframe colored by idepth.
+  features: true # Features colored by idepth.
+  detections: false # Feature detections
+  matches: false # Epipolar line searches (green success, red failure).
+  normals: false # Image colored by interpolated normal vectors.
+  idepthmap: true # Colored idepthmap.
+  text_overlay: true # Draw text overlays on images.
+  flip_images: false # Rotated debug images by 180 degrees for display.
+
+threading:
+  openmp:
+    num_threads: 4 # Number of threads used in parallel sections.
+    chunk_size: 1024 # Number of items given to each thread.
+
+features:
+  do_letterbox: False # Process only middle third of image.
+  detection:
+    min_grad_mag: 5.0 # Minimum gradient magntiude.
+    min_error: 100 # Minimum photo error.
+    win_size: 16 # Detection grid resolution (win_size x win_size).
+  tracking:
+    win_size: 5 # Feature tracking window size. If not using LK, must be odd.
+    max_dropouts: 5 # Max number of missed detections before feature is killed.
+    epipolar_line_var: 4.0 # Epipolar line noise variance.
+
+regularization:
+  do_median_filter: false # Apply median filter on graph.
+  do_lowpass_filter: false # Apply lowpass filter on graph.
+  do_nltgv2: true # Apply NLTGV2-L1 (i.e. planar) regularization.
+  nltgv2:
+    adaptive_data_weights: false # Set vertex data weights to inverse idepth variance.
+    rescale_data: false # Rescale data to have mean 1.
+    init_with_prediction: true # Initialize vertex idepths with predicted value from dense idepthmap.
+    idepth_var_max: 0.01 # Maximum idepth var before feature can be added to graph.
+    data_factor: 0.15 # Scalar that controls smoothness vs. data (0.1 for lvl5, 0.25 for lvl3).
+    step_x: 0.001 # Optimization primal step size.
+    step_q: 125.0 # Optimization dual step size.
+    theta: 0.25 # Extra-gradient step size.
+    min_height: -100000000000000.0 # Minimum height of features that are added to graph.
+    max_height: 100000000000000.0 # Maximum height of features that are added to graph.
+    check_sticky_obstacles: False
+
+# Not sure if these options still work, so don't set them before checking.
+analysis:
+  pass_in_truth: false
