@@ -22,7 +22,7 @@ jobs:
       - run: apt-get update && apt-get install -y python-catkin-tools
 
       # Checkout flame.
-      - add_ssh_keys
+      - run: mkdir ~/.ssh/ && echo -e "Host github.com\n\tStrictHostKeyChecking no\n" > ~/.ssh/config
       - run: cd src && git clone git@github.com:robustrobotics/flame.git
 
       # Init workspace and install rosdep dependencies.
