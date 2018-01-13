@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/robustrobotics/flame_ros/tree/master.svg?style=shield)](https://circleci.com/gh/robustrobotics/flame_ros/tree/master)
+
 # flame_ros
 **FLaME** (Fast Lightweight Mesh Estimation) is a lightweight, CPU-only method
 for dense online monocular depth estimation. Given a sequence of camera images
