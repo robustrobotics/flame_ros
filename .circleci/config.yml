@@ -12,9 +12,18 @@ jobs:
       - checkout:
           path: ~/flame_ws/src/flame_ros
 
-      # Install dependencies via apt/ros-dep.
-      - run: apt-get install -y libboost-all-dev libpcl-dev python-catkin-tools
+      # Install apt dependencies.
+      - run: apt-get install -y libboost-all-dev libpcl-dev
+
+      # Install catkin_tools.
+      - run: sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list'
+      - run: wget http://packages.ros.org/ros.key -O - | sudo apt-key add -
+      - run: apt-get update && apt-get install -y python-catkin-tools
+
+      # Checkout flame.
       - run: cd src && git clone git@github.com:robustrobotics/flame.git
+
+      # Init workspace and install rosdep dependencies.
       - run: source /opt/ros/kinetic/setup.sh && catkin init
       - run: source /opt/ros/kinetic/setup.sh && rosdep install -iy --from-paths ./src
 
