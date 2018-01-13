@@ -6,14 +6,14 @@ jobs:
     working_directory: ~/flame_ws
     docker:
       # Only need kinetic image so that we can easily use OpenCV 3.3.
-      - image: osrf/ros:kinetic-desktop-full
+      - image: osrf/ros:kinetic-desktop-full-xenial
     steps:
       # Commands to checkout/build repo.
-      # Install apt dependencies.
-      - run: apt-get install -y apt-utils lsb-release git openssh-client wget libboost-all-dev libpcl-dev
-
       - checkout:
           path: ~/flame_ws/src/flame_ros
+
+      # Install apt dependencies.
+      - run: apt-get install -y apt-utils lsb-release git openssh-client wget libboost-all-dev libpcl-dev
 
       # Install catkin_tools.
       - run: sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list'
