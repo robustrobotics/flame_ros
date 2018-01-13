@@ -36,7 +36,7 @@ jobs:
       - run: cp ./src/flame/scripts/env.sh ./dependencies
 
       # Build!
-      - run: source /opt/ros/kinetic/setup.sh && source ./dependencies/env.sh && catkin build
+      - run: source /opt/ros/kinetic/setup.sh && source ./dependencies/env.sh && catkin build --no-status --no-notify -j2 --mem-limit 3G
 
 # Two main workflows: One run per commit, one to run master nightly.
 workflows:
