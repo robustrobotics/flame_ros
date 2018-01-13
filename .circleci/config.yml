@@ -13,7 +13,7 @@ jobs:
           path: ~/flame_ws/src/flame_ros
 
       # Install dependencies via apt/ros-dep.
-      - run: libboost-all-dev libpcl-dev python-catkin-tools
+      - run: apt-get install -y libboost-all-dev libpcl-dev python-catkin-tools
       - run: cd src && git clone git@github.com:robustrobotics/flame.git
       - run: source /opt/ros/kinetic/setup.sh && catkin init
       - run: source /opt/ros/kinetic/setup.sh && rosdep install -iy --from-paths ./src
