@@ -13,7 +13,8 @@ jobs:
 
       # Install apt dependencies.
       - run: apt-get update
-      - run: apt-get install -y sudo apt-utils lsb-release git openssh-client wget libboost-all-dev libpcl-dev
+      - run: apt-get install -y sudo apt-utils lsb-release git openssh-client wget
+      - run: apt-get install -y libboost-all-dev libpcl-dev
 
       # Install catkin_tools.
       - run: sh -c 'echo "deb http://packages.ros.org/ros/ubuntu `lsb_release -sc` main" > /etc/apt/sources.list.d/ros-latest.list'
@@ -21,6 +22,7 @@ jobs:
       - run: apt-get update && apt-get install -y python-catkin-tools
 
       # Checkout flame.
+      - add_ssh_keys
       - run: cd src && git clone git@github.com:robustrobotics/flame.git
 
       # Init workspace and install rosdep dependencies.
